@@ -82,7 +82,7 @@ der Methoden und ihrer Implementierung sein.
     dass eine Überweisung korrekt durchgeführt wird und alle Bedingungen (wie
     ausreichendes Guthaben) geprüft werden.
 -   **Testfall 3**: Test der `loginVerifizierung()` Methode, um zu überprüfen,
-    ob die Login-Daten ordnungsgemäß validiert werden.
+    ob die Login-Daten ordnungsgemäss validiert werden.
 -   **Testfall 4**: Test der `getKontostand()` Methode, um zu überprüfen, ob der
     Kontostand korrekt aus der Datenbank abgerufen wird.
 
