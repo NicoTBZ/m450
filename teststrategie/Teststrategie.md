@@ -30,7 +30,7 @@ Rabattregeln basieren auf dem Kaufpreis des Autos:
 
 ---
 
-## Übung 2: Funktionale Black-Box Tests für eine Autovermietung-Webseite
+## Übung 2: Funktionale Black-Box Tests für eine Autovermietung-Webseite MERBAG.CH
 
 ### Funktionale Black-Box Tests für eine Autovermietung
 
@@ -86,16 +86,59 @@ der Methoden und ihrer Implementierung sein.
 -   **Testfall 4**: Test der `getKontostand()` Methode, um zu überprüfen, ob der
     Kontostand korrekt aus der Datenbank abgerufen wird.
 
-### 3. Verbesserungsvorschläge und Best Practices
+# Übung 3 – Testanalyse der simplen Bank-Software
 
--   **Code-Qualität**: Der Code könnte modularer gestaltet werden, um die
-    Wiederverwendbarkeit zu erhöhen und die Testbarkeit zu verbessern.
--   **Fehlerbehandlung**: Die Fehlerbehandlung sollte einheitlicher und robuster
-    sein, insbesondere für Fälle wie falsche Eingaben oder fehlende
-    Netzwerkverbindungen.
--   **Sicherheit**: Sicherheitsmechanismen wie Verschlüsselung für sensible
-    Daten (z. B. Passwörter, Transaktionsdaten) sollten implementiert werden, um
-    die Daten der Benutzer zu schützen.
--   **Dokumentation**: Eine vollständige Dokumentation der Funktionen und ihrer
-    Eingabewerte sowie der erwarteten Ergebnisse ist erforderlich, um Testfälle
-    effizient zu entwickeln.
+## Black-Box Testfälle
+
+_(Aus Sicht einer Benutzerin, ohne Kenntnis der internen Implementierung)_
+
+| Testfall                       | Beschreibung                                      | Erwartetes Ergebnis                                  |
+| ------------------------------ | ------------------------------------------------- | ---------------------------------------------------- |
+| Konto erstellen                | Neues Konto mit Name, Startsaldo, Währung anlegen | Konto wird korrekt angelegt, ID automatisch vergeben |
+| Einzahlung                     | Betrag auf ein Konto einzahlen                    | Saldo steigt um den Betrag                           |
+| Auszahlung (genug Guthaben)    | Betrag abheben                                    | Saldo sinkt um den Betrag                            |
+| Auszahlung (zu wenig Guthaben) | Mehr abheben als verfügbar                        | Fehlermeldung bzw. kein negativer Saldo              |
+| Kontosuche                     | Konto anhand von Owner-Namen abrufen              | Korrektes Konto wird zurückgegeben oder `null`       |
+| Anzahl Konten                  | Anzahl der bestehenden Konten abfragen            | korrekte Anzahl                                      |
+| Wechselkurs-Abfrage            | API-Request ausführen                             | Erfolgreiche Antwort mit Resultat                    |
+| Wechselkurs-Abfrage Fehlerfall | Falsche Währung oder keine Internetverbindung     | Fehlermeldung / Ausnahme wird behandelt              |
+| Thread-Zugriff auf Counter     | Mehrere Threads erhöhen den Counter               | Wert erhöht sich korrekt und ohne Race Condition     |
+
+---
+
+## White-Box Testfälle
+
+_(Basierend auf einzelnen Methoden im Code)_
+
+| Methode                        | Was testen?                                        | Ziel                                                        |
+| ------------------------------ | -------------------------------------------------- | ----------------------------------------------------------- |
+| `Account.deposit()`            | Verschiedene positive/negative Werte               | Korrekte Anpassung des Saldos, keine negativen Einzahlungen |
+| `Account.withdraw()`           | Randfälle, z.B. 0, negativer Wert, zu hoher Betrag | Sicherstellen, dass Fehlverhalten abgefangen wird           |
+| `Bank.getAccountByOwner()`     | Case-Sensitivity, nicht vorhandene Namen           | Sicherstellen, dass die Suche robust funktioniert           |
+| `Counter.add()`                | Parallelzugriffe                                   | Thread-Safety durch `synchronized` überprüfen               |
+| `ExchangeRateOkhttp.convert()` | Erfolgs- und Fehlerfälle des JSON-Parsens          | API-Handling, Exception-Verhalten                           |
+
+---
+
+## Verbesserungsmöglichkeiten / Best Practices
+
+-   **Fehlende Fehlerbehandlung** – z. B. `withdraw` sollte nicht einfach
+    negatives Guthaben erlauben.
+-   **Input Validation** – Methoden sollten ungültige Parameter abfangen (z. B.
+    negative Einzahlungen).
+-   **Encapsulation stärken** – einige Felder sind nicht `private`.
+-   **Logging statt `System.out.println`** – erleichtert Fehlersuche.
+-   **Unit Tests einführen** – JUnit für White-Box Tests einsetzen.
+-   **API-Aufruf entkoppeln** – Interface einführen, um HTTP-Client besser
+    mocken zu können.
+-   **Enum verbessern** – ggf. ISO-Codes hinterlegen.
+-   **Thread-Sicherheit der Bank** – Kontoliste ist nicht synchronisiert.
+-   **Mehrschichtige Architektur** – Trennung zwischen Domain, Service, API, UI.
+
+---
+
+## Kurzfazit
+
+Die Software eignet sich gut, um grundlegende Testkonzepte zu üben.  
+Viele potenzielle Testfälle ergeben sich aus Randwerten, Fehlerfällen und dem
+parallelen Zugriff.
