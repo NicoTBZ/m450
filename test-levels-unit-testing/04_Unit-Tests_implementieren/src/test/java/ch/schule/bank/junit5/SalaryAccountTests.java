@@ -22,12 +22,10 @@ public class SalaryAccountTests
 	{
 		SalaryAccount s = new SalaryAccount("P-1", -500L);
 
-		// can withdraw up to credit limit
 		assertTrue(s.deposit(1, 200L));
-		assertTrue(s.withdraw(2, 600L)); // final balance = -400 which is >= -500
+		assertTrue(s.withdraw(2, 600L));
 		assertEquals(-400L, s.getBalance());
 
-		// cannot exceed credit limit
 		assertFalse(s.withdraw(3, 200L));
 	}
 }
